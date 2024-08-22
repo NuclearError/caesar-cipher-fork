@@ -1,42 +1,65 @@
+
+import React, { useState } from 'react';
+import { caesarCipher } from './caesarCipher';
 import './App.css'
 
-function App() {
+export const App: React.FC = () => {
+  const [inputString, setInputString] = useState<string>('');
+  const [shiftNumber, setShiftNumber] = useState<number>(0);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
+  const [result, setResult] = useState<string>('');
+
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const encryptedResult = caesarCipher(inputString, shiftNumber, direction);
+    setResult(encryptedResult);
+  };
 
   return (
     <>
-     <div>
-      <h1>The Bots Frontend coding challenge</h1>
-      <p>
-        For this challenge we would like you to create a{' '}
-        <a href="https://en.wikipedia.org/wiki/Caesar_cipher">Caeser Cipher</a>.
-        You will create an input, which will take any string and apply the
-        cipher, then display the results below.
-      </p>
-      <h2>The Spec</h2>
-      <ul>
-        <li>Create a form which takes a string input, and outputs the string with the cipher applied</li>
-        <li>Add a form element to set if the cipher is applied forwards or backwards</li>
-        <li>Numbers & special characters should be ignored</li>
-      </ul>
+      <section className="cipherContainer">
+        <form id="cipherForm" onSubmit={handleSubmit}>
+          <fieldset>
+            <legend>Message to Encrypt</legend>
+            <label htmlFor="inputString">Type message here:</label>
+            <input
+              type="text"
+              id="inputString"
+              value={inputString}
+              onChange={(e) => setInputString(e.target.value)}
+              required
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Config</legend>
+            <label htmlFor="direction">Direction:</label>
+            <select
+              id="direction"
+              value={direction}
+              onChange={(e) => setDirection(e.target.value as 'forward' | 'backward')}
+            >
+              <option value="forward">Forward</option>
+              <option value="backward">Backward</option>
+            </select><br />
+            <label htmlFor="inputString">Number of places to shift</label>
+            <input
+              type="number"
+              id="inputNumber"
+              value={shiftNumber}
+              onChange={(e) => setShiftNumber(parseInt(e.target.value, 10))}
+              required
+            />
+          </fieldset>
+          <button type="submit">Encrypt</button>
+        </form>
 
-      <h2>Getting started</h2>
-      <ul>
-        <li>Open a terminal and run `npm run dev`</li>
-        <li>A second terminal can be opened to run tests: `npm run test`</li>
-      </ul>
+        <div className="results">
+          <h3>Result:</h3>
+          <p id="result">{result}</p>
+        </div>
 
-      <h2>Considerations</h2>
-      <ul>
-        <li>No libraries please</li>
-        <li>Please provide the solution with tests & types</li>
-        <li>Expected time should be 1 hour</li>
-      </ul>
-      <p>
-        Please fork this repo and send us a link to your solution. Good luck!
-      </p>
-    </div>
+      </section>
     </>
   )
-}
-
-export default App
+};
